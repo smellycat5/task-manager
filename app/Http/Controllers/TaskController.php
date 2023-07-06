@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskStoreRequest;
+use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,6 @@ class TaskController extends Controller
         $validated = $request->validated();
         $user_id = auth()->user()->id;
         $validated['user_id'] = $user_id;
-        // dd($validated);
         Task::create($validated);
         return redirect('dashboard');
     }
@@ -34,9 +34,11 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskUpdateRequest $request, Task $task)
     {
-        //
+        $validated = $request->validated();
+        $task->update($validated);
+        return redirect('dashboard');
     }
 
     /**
@@ -44,6 +46,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return redirect('dashboard');
     }
 }
