@@ -29,5 +29,6 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function(){
 Route::apiresource('task', TaskController::class)->except('show');
+Route::post('task/status/{id}',[TaskController::class, 'status'])->name('task.status');
 });
 require __DIR__.'/auth.php';

@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    protected Task $task;
+
+    public function __construct(Task $task) {
+        $this->task = $task;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -47,6 +52,22 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         $task->delete();
+        return redirect('dashboard');
+    }
+
+    /**
+     * update project status.
+     */
+    public function status(Request $request)
+    {
+        $data =$this->task->findorfail($request->id);
+        // dd($data);
+        if (!$data->status) {
+            $data->status = true;
+        } else {
+            $data->status = false;
+        }
+        $data->save();
         return redirect('dashboard');
     }
 }

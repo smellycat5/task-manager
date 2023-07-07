@@ -6,43 +6,48 @@
     </x-slot>
     {{-- add task --}}
     <div class="flex justify-center pt-4">
-        <form action={{ route('task.store') }} method="POST">
+        <form action="{{ route('task.store') }}" method="POST">
             @csrf
-            <input type="text"
-                class="w-64 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
-                placeholder="Add New Task" name="task">
+            <input type="text" class="w-64 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
+                placeholder="Add New Task" name="task" maxlength="80">
+            <input type="hidden" name="status" value=0>
             <button type="submit"
                 class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">Submit</button>
         </form>
     </div>
+    {{-- end add task --}}
 
     @foreach ($tasks as $task)
         <div class="py-2">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <div class="border border-gray-300 rounded p-4 shadow border-blue-300">
-                    <div class="flex items-center">
-                        <input type="checkbox" id="tick" class="form-checkbox h-5 w-5 text-blue-500"
-                            onchange="toggleTextDecoration(this.checked)">
-
-                        {{-- edit task --}}
+                    <div class="flex ">
+                        <form action="{{ route('task.status', $task->id) }}" method="POST">
+                            @csrf
+                            <input type="checkbox" id="tick" class="form-checkbox h-5 w-5 text-blue-500 rounded"
+                                name="isChecked" onchange="this.form.submit()"
+                                {{ $task->status == 1 ? 'checked' : '' }}>
+                        </form>
                         <div id="editContainer" class="flex items-center">
-                            <span id="taskLabel" class="ml-2 text-gray-700">{{ $task->task }}</span>
-                            <button id="editButton" class="text-gray-500 cursor-pointer p-1" aria-label="Edit"
-                                onclick="enableEdit(this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" class="h-5 w-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-2 2m0 0L15 9m2 2l2-2m0 0l2 2M6 9l-2 2m2-2l2-2m0 2l2 2m-2-2L8 9" />
-                                </svg>
+                            @if ($task->status == 0)
+                                <span id="taskLabel" class="ml-2 text-gray-700">{{ $task->task }}</span>
+                            @else
+                                <span id="taskLabel" class="ml-2 text-gray-700 line-through">{{ $task->task }}</span>
+                            @endif
+
+                            {{-- edit task --}}
+                            <button id="editButton"
+                                class="text-gray-500 cursor-pointer p-1 rounded bg-transparent hover:bg-gray-200 focus:outline-none"
+                                aria-label="Edit" onclick="enableEdit(this)">
+                                <i class="fas fa-pencil-alt"></i>
                             </button>
+
                             <form id="editForm" class="hidden ml-2" action="{{ route('task.update', $task->id) }}"
                                 method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input id="taskInput" type="text" name="task" value="{{ $task->task }}"
-                                    class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500">
+                                    class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500" maxlength="70">
                                 <button type="submit" class="text-gray-500 cursor-pointer p-1" aria-label="Save">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor" class="h-5 w-5">
@@ -58,7 +63,9 @@
                             <form action="{{ route('task.destroy', $task->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-gray-500 cursor-pointer p-1" aria-label="Delete">
+                                <button type="submit"
+                                    class="text-gray-500 cursor-pointer p-1 rounded bg-transparent hover:bg-gray-200 focus:outline-none"
+                                    aria-label="Delete">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor" class="h-5 w-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

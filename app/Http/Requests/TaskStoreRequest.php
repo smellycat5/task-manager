@@ -22,7 +22,8 @@ class TaskStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'task'=>'required'
+            'task'=>['required', 'max : 80'],
+            'status'=> 'required'
         ];
     }
 }
