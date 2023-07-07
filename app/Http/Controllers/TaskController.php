@@ -56,7 +56,7 @@ class TaskController extends Controller
     }
 
     /**
-     * update project status.
+     * Update project status.
      */
     public function status(Request $request)
     {
