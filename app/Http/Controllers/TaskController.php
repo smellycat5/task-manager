@@ -61,7 +61,6 @@ class TaskController extends Controller
     public function status(Request $request)
     {
         $data =$this->task->findorfail($request->id);
-        // dd($data);
         if (!$data->status) {
             $data->status = true;
         } else {
